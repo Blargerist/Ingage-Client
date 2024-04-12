@@ -1,0 +1,40 @@
+
+plugins {
+    id 'application'
+	id 'java'
+    //Shadow jar
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.github.spair:imgui-java-app:1.86.11"
+    
+    //Google libraries
+    implementation 'com.google.guava:guava:30.1.1-jre'
+	//GSON
+    implementation 'com.google.code.gson:gson:2.9.1'
+	
+	//Netty
+	implementation('io.netty:netty-all:4.1.75.Final') {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    
+    //exp4j
+    implementation 'net.objecthunter:exp4j:0.4.8'
+    
+    //Apache commons
+    implementation 'org.apache.commons:commons-collections4:4.5.0-M1'
+	
+	//Socket.IO
+	implementation "io.socket:socket.io-client:1.0.1"
+}
+
+shadowJar {
+   archiveBaseName.set('Ingage')
+   archiveClassifier.set('')
+   archiveVersion.set('')
+}
