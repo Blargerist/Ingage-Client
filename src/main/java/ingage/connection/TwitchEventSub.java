@@ -236,8 +236,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
         		
         		JsonObject condition = new JsonObject();
         		json.add("condition", condition);
-//        		condition.addProperty("broadcaster_user_id", user.id);//Matt: 3102991 Darko: 63937599 Jeremy: 96161915
-        		condition.addProperty("broadcaster_user_id", "96161915");
+        		condition.addProperty("broadcaster_user_id", user.id);
         		condition.addProperty("user_id", user.id);
         		
         		JsonObject transport = new JsonObject();
@@ -256,8 +255,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
         		
         		JsonObject condition = new JsonObject();
         		json.add("condition", condition);
-//        		condition.addProperty("broadcaster_user_id", user.id);
-        		condition.addProperty("broadcaster_user_id", "96161915");
+        		condition.addProperty("broadcaster_user_id", user.id);
         		condition.addProperty("user_id", user.id);
         		
         		JsonObject transport = new JsonObject();
