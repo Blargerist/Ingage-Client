@@ -60,6 +60,17 @@ public enum ParameterType {
 		public Class<? extends ParameterConfigBase<?, ?>> getParameterConfigClass() {
 			return BooleanParameter.Config.class;
 		}
+	},
+	EFFECT_LIST {
+		@Override
+		public Class<? extends ParameterBase<?, ?>> getParameterClass() {
+			return EffectListParameter.class;
+		}
+
+		@Override
+		public Class<? extends ParameterConfigBase<?, ?>> getParameterConfigClass() {
+			return EffectListParameter.Config.class;
+		}
 	};
 	
 	public abstract Class<? extends ParameterBase<?, ?>> getParameterClass();

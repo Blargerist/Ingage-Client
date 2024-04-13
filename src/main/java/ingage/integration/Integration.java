@@ -8,11 +8,21 @@ import ingage.integration.effect.EffectBase;
 
 public class Integration {
 
-	public final String id = null;
-	public final String display = null;
+	public final String id ;
+	public final String display;
 	public final List<EffectBase> effects = new ArrayList<EffectBase>();
 	//For gui
 	public transient String[] effectDisplayNames = new String[] {};
+	
+	public Integration() {
+		this.id = null;
+		this.display = null;
+	}
+	
+	public Integration(String id, String display) {
+		this.id = id;
+		this.display = display;
+	}
 	
 	public EffectBase getEffect(String id) {
 		for (EffectBase effect : this.effects) {

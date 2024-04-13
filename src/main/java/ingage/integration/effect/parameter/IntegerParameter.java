@@ -4,6 +4,7 @@ import java.util.Map;
 
 import imgui.ImGui;
 import imgui.type.ImString;
+import ingage.integration.effect.EffectBase.EffectConfig;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class IntegerParameter extends ParameterBase<String, Integer> {
@@ -44,7 +45,7 @@ public class IntegerParameter extends ParameterBase<String, Integer> {
 		}
 
 		@Override
-		public void imGui() {
+		public void imGui(EffectConfig config) {
 			if (this.parameter != null) {
 				ImString value = new ImString(this.value, 300);
 				

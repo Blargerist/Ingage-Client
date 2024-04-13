@@ -13,7 +13,6 @@ import com.google.gson.JsonParseException;
 import ingage.Util;
 import ingage.integration.Integration;
 import ingage.integration.effect.EffectBase;
-import net.objecthunter.exp4j.Expression;
 
 public abstract class ParameterBase<T, R> {
 
@@ -52,7 +51,7 @@ public abstract class ParameterBase<T, R> {
 		public abstract T getValue();
 		public abstract void setValue(T value);
 		public abstract R evaluate(Map<String, Double> variables);
-		public abstract void imGui();
+		public abstract void imGui(EffectBase.EffectConfig parent);
 		public abstract ParameterBase.ParameterConfigBase<T, R> clone();
 		
 		public ParameterBase<T, R> getParameter() {

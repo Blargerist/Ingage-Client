@@ -10,7 +10,10 @@ import java.util.stream.Stream;
 import ingage.Logger;
 import ingage.Util;
 import ingage.integration.effect.EffectBase;
+import ingage.integration.effect.parameter.BooleanParameter;
+import ingage.integration.effect.parameter.EffectListParameter;
 import ingage.integration.effect.parameter.ParameterBase;
+import ingage.integration.effect.parameter.ParameterType;
 
 public class IntegrationManager {
 
@@ -34,6 +37,8 @@ public class IntegrationManager {
 	
 	public static void load() {
 		integrations.clear();
+		
+		loadInternalIntegration();
 		
 		File integrationsFolderFile = new File(INTEGRATIONS_FOLDER);
 		integrationsFolderFile.mkdirs();
@@ -79,5 +84,44 @@ public class IntegrationManager {
 		IntegrationManager.integrationDisplayNames = IntegrationManager.integrations.stream().map((i) -> {
 			return i.display;
 		}).toArray(String[]::new);
+	}
+	
+	public static void loadInternalIntegration() {
+		Integration integration = new Integration("ingage", "Ingage");
+		
+		EffectBase listEffect = new EffectBase();
+		listEffect.id = "list";
+		listEffect.display = "List";
+		listEffect.integration = integration;
+		
+		EffectListParameter listParameter = new EffectListParameter();
+		listParameter.integration = integration;
+		listParameter.effect = listEffect;
+		listParameter.type = ParameterType.EFFECT_LIST;
+		listParameter.id = "effects";
+		listParameter.display = "Effects";
+		listParameter.description = "A list of effects to run";
+		listParameter.required = true;
+		listParameter.defaultValue = null;
+		
+		listEffect.parameters.add(listParameter);
+		
+		BooleanParameter weightedParameter = new BooleanParameter();
+		weightedParameter.integration = integration;
+		weightedParameter.effect = listEffect;
+		weightedParameter.type = ParameterType.BOOLEAN;
+		weightedParameter.id = "weighted";
+		weightedParameter.display = "Weighted";
+		weightedParameter.description = "If weighted, chooses one random effect from the list based on their relative weights each time a condition is met. If not, chooses all effects.";
+		weightedParameter.required = true;
+		weightedParameter.defaultValue = null;
+		
+		listEffect.parameters.add(weightedParameter);
+		
+		integration.effects.add(listEffect);
+		
+		integration.buildDisplayNamesArray();
+		
+		integrations.add(integration);
 	}
 }

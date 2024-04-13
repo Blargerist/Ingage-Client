@@ -4,6 +4,7 @@ import java.util.Map;
 
 import imgui.ImGui;
 import imgui.type.ImString;
+import ingage.integration.effect.EffectBase.EffectConfig;
 
 public class StringArrayParameter extends ParameterBase<String[], String[]> {
 	@Override
@@ -19,7 +20,7 @@ public class StringArrayParameter extends ParameterBase<String[], String[]> {
 	@Override
 	public ParameterConfigBase<String[], String[]> createConfig() {
 		Config config = new Config();
-		config.value = this.defaultValue != null ? this.defaultValue : new String[] {};
+		config.value = this.defaultValue != null ? this.defaultValue.clone() : new String[] {};
 		config.parameter = this;
 		config.parameterID = this.id;
 		config.type = this.type;
@@ -43,7 +44,7 @@ public class StringArrayParameter extends ParameterBase<String[], String[]> {
 		}
 
 		@Override
-		public void imGui() {
+		public void imGui(EffectConfig config) {
 			StringBuilder valueBuilder = new StringBuilder();
 			
 			if (this.value.length > 0) {

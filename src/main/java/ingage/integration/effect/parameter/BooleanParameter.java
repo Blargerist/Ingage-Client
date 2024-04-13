@@ -3,6 +3,7 @@ package ingage.integration.effect.parameter;
 import java.util.Map;
 
 import imgui.ImGui;
+import ingage.integration.effect.EffectBase.EffectConfig;
 
 public class BooleanParameter extends ParameterBase<Boolean, Boolean> {
 	@Override
@@ -42,7 +43,7 @@ public class BooleanParameter extends ParameterBase<Boolean, Boolean> {
 		}
 
 		@Override
-		public void imGui() {
+		public void imGui(EffectConfig config) {
 			if (this.parameter != null) {
 				if (ImGui.radioButton(this.parameter.display, this.value)) {
 					this.value =! this.value;

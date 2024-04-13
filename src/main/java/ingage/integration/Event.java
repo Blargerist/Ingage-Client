@@ -12,7 +12,6 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import ingage.Logger;
 import ingage.event.EventBase;
-import ingage.event.Metadata;
 import ingage.integration.condition.ConditionBase;
 import ingage.integration.condition.ConditionBase.ConditionType;
 import ingage.integration.effect.EffectBase;
@@ -54,7 +53,7 @@ public class Event {
     	
     	for (EffectConfig effect : this.effects) {
     		try {
-        		list.add(effect.toEffectMessage(variables));
+        		list.addAll(effect.toEffectMessages(this, variables));
     		} catch (Exception e) {
     			Logger.error("Exception evaluating effect "+effect.effectID+" in event "+this.name, e);
     		}
@@ -192,9 +191,9 @@ public class Event {
 		return event;
 	}
 	
-	private static class ImGuiAddEffect {
+	public static class ImGuiAddEffect {
 		private int integrationIndex;
-		private EffectConfig effect = null;
+		public EffectConfig effect = null;
 		
 		public boolean imGui() {
 			boolean selected = false;

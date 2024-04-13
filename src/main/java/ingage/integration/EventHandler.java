@@ -23,8 +23,10 @@ import ingage.gui.IntegrationEventsScreen;
 import ingage.integration.effect.EffectBase;
 import ingage.integration.effect.EffectBase.EffectConfig;
 import ingage.integration.effect.EffectMessage;
+import ingage.integration.effect.parameter.EffectListParameter;
 import ingage.integration.effect.parameter.ParameterBase;
 import ingage.integration.effect.parameter.ParameterBase.ParameterConfigBase;
+import ingage.integration.effect.parameter.ParameterType;
 
 public class EventHandler {
 	
@@ -60,7 +62,7 @@ public class EventHandler {
 						JsonObject toSend = new JsonObject();
 						toSend.addProperty("type", "EFFECT");
 						toSend.add("payload", msg.toSend);
-												
+																		
 						IntegrationWebSocketServer.queueIntegrationMessage(msg.integrationID, toSend);
 						IntegrationSocketServer.queueIntegrationMessage(msg.integrationID, toSend);
 					}
@@ -94,32 +96,7 @@ public class EventHandler {
 														
 							for (Event event : profile.events) {
 								for (EffectConfig effect : event.effects) {
-									Integration integration = IntegrationManager.getIntegration(effect.integrationID);
-									
-									if (integration != null) {
-										effect.integration = integration;
-										
-										EffectBase effectBase = integration.getEffect(effect.effectID);
-										
-										if (effectBase != null) {
-											effect.effect = effectBase;
-											
-											for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
-												parameter.parameter = effectBase.getParameter(parameter.parameterID);
-											}
-											
-											//Add any missing parameters to the effect config
-											outer:
-											for (ParameterBase<?, ?> p : effectBase.parameters) {
-												for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
-													if (parameter.parameterID.equals(p.id)) {
-														continue outer;
-													}
-												}
-												effect.parameters.add(p.createConfig());
-											}
-										}
-									}
+									setEffectConfigData(effect);
 								}
 							}
 							EventHandler.profiles.add(profile);
@@ -134,6 +111,42 @@ public class EventHandler {
 		}
 		//Update profile configuration screen
 		IntegrationEventsScreen.INSTANCE.updateProfiles();
+	}
+	
+	private static void setEffectConfigData(EffectConfig effect) {
+		Integration integration = IntegrationManager.getIntegration(effect.integrationID);
+		
+		if (integration != null) {
+			effect.integration = integration;
+			
+			EffectBase effectBase = integration.getEffect(effect.effectID);
+			
+			if (effectBase != null) {
+				effect.effect = effectBase;
+				
+				for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
+					parameter.parameter = effectBase.getParameter(parameter.parameterID);
+					
+					//Update effects in lists
+					if (parameter.type == ParameterType.EFFECT_LIST) {
+						for (EffectConfig cfg : ((EffectListParameter.Config)parameter).value) {
+							setEffectConfigData(cfg);
+						}
+					}
+				}
+				
+				//Add any missing parameters to the effect config
+				outer:
+				for (ParameterBase<?, ?> p : effectBase.parameters) {
+					for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
+						if (parameter.parameterID.equals(p.id)) {
+							continue outer;
+						}
+					}
+					effect.parameters.add(p.createConfig());
+				}
+			}
+		}
 	}
 
 	public static void save(List<Profile> profiles) {

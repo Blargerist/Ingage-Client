@@ -8,9 +8,13 @@ import java.util.UUID;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import ingage.Logger;
 import ingage.Util;
+import ingage.integration.Event;
 import ingage.integration.Integration;
 import ingage.integration.IntegrationManager;
+import ingage.integration.effect.parameter.BooleanParameter;
+import ingage.integration.effect.parameter.EffectListParameter;
 import ingage.integration.effect.parameter.ParameterBase;
 import ingage.integration.effect.parameter.ParameterBase.ParameterConfigBase;
 
@@ -44,13 +48,14 @@ public class EffectBase {
 		return config;
 	}
 	
-	public static class EffectConfig {//TODO: When loading an effect config, add any new parameters
+	public static class EffectConfig {
 		public final transient String uuid = UUID.randomUUID().toString();
 		public transient Integration integration;
 		public transient EffectBase effect;
 		public String integrationID;
 		public String effectID;
 		public String effectDisplay;
+		public int weight = 100;
 		public List<ParameterConfigBase<?, ?>> parameters = new ArrayList<ParameterConfigBase<?, ?>>();
 		
 		public Integration getIntegration() {
@@ -71,26 +76,123 @@ public class EffectBase {
 			return this.effect;
 		}
 		
-		public EffectMessage toEffectMessage(Map<String, Double> variables) {
-			JsonObject json = new JsonObject();
-			json.addProperty("integration", this.integrationID);
-			json.addProperty("type", this.effectID);
+		public List<EffectMessage> toEffectMessages(Event event, Map<String, Double> variables) {
+			List<EffectMessage> messages = new ArrayList<EffectMessage>();
 			
-			JsonObject parameters = new JsonObject();
-			json.add("values", parameters);
-			
-			for (ParameterConfigBase<?, ?> parameter : this.parameters) {
-//				Logger.log("Parameter "+parameter.parameterID+" "+Util.GSON.toJson(parameter.evaluate(variables)));
-//				JsonObject p = new JsonObject();
-				parameters.add(parameter.parameterID, Util.GSON.fromJson(Util.GSON.toJson(parameter.evaluate(variables)), JsonElement.class));
-//				parameters.add(p);
+			//Special handling for internal integration
+			if (this.integrationID.equals("ingage") && this.effectID.equals("list")) {
+				boolean weighted = false;
+				int listLength = 0;
+				
+				for (ParameterConfigBase<?, ?> parameter : this.parameters) {
+					if (parameter.parameterID.equals("weighted")) {//Check if it's weighted
+						weighted = ((BooleanParameter.Config)parameter).value;
+					} else if (parameter.parameterID.equals("effects")) {//Get size of the list
+						listLength = ((EffectListParameter.Config)parameter).value.size();
+					}
+				}
+				//Make sure it's weighted and there's at least two options to pick from
+				if (weighted && listLength > 1) {
+					int index = 0;
+					
+					for (ParameterConfigBase<?, ?> parameter : this.parameters) {
+						if (parameter.parameterID.equals("effects")) {
+							//Get a random index
+							index = Util.weightedRandomIndex(((EffectListParameter.Config)parameter).value, Util.random);
+							//Add messages only for the chosen index
+							messages.addAll(((EffectListParameter.Config)parameter).value.get(index).toEffectMessages(event, variables));
+						}
+					}
+				} else {
+					for (ParameterConfigBase<?, ?> parameter : this.parameters) {
+						if (parameter.parameterID.equals("effects")) {
+							try {
+								//Add all the messages
+								messages.addAll(handleEffectList(event, variables, ((EffectListParameter.Config)parameter).value));
+				    		} catch (Exception e) {
+				    			Logger.error("Exception evaluating effect "+this.effectID+" in event "+event.name, e);
+				    		}
+						}
+					}
+				}
+			} else {
+				//Normal effect
+				JsonObject json = new JsonObject();
+				json.addProperty("integration", this.integrationID);
+				json.addProperty("type", this.effectID);
+				
+				JsonObject parameters = new JsonObject();
+				json.add("values", parameters);
+				
+				for (ParameterConfigBase<?, ?> parameter : this.parameters) {
+					parameters.add(parameter.parameterID, Util.GSON.fromJson(Util.GSON.toJson(parameter.evaluate(variables)), JsonElement.class));
+				}
+				messages.add(new EffectMessage(this.integrationID, json));
 			}
-			return new EffectMessage(this.integrationID, json);
+			return messages;
+		}
+		
+		private List<EffectMessage> handleEffectList(Event event, Map<String, Double> variables, List<EffectBase.EffectConfig> list) {
+			List<EffectMessage> messages = new ArrayList<EffectMessage>();
+			
+			for (EffectConfig effect : list) {
+				//Special handling for internal integration
+				if (effect.integrationID.equals("ingage") && effect.effectID.equals("list")) {
+					boolean weighted = false;
+					int listLength = 0;
+					
+					for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
+						if (parameter.parameterID.equals("weighted")) {//Check if it's weighted
+							weighted = ((BooleanParameter.Config)parameter).value;
+						} else if (parameter.parameterID.equals("effects")) {//Get size of the list
+							listLength = ((EffectListParameter.Config)parameter).value.size();
+						}
+					}
+					//Make sure it's weighted and there's at least two options to pick from
+					if (weighted && listLength > 1) {
+						int index = 0;
+						
+						for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
+							if (parameter.parameterID.equals("effects")) {
+								//Get a random index
+								index = Util.weightedRandomIndex(((EffectListParameter.Config)parameter).value, Util.random);
+								//Add messages only for the chosen index
+								messages.addAll(((EffectListParameter.Config)parameter).value.get(index).toEffectMessages(event, variables));
+							}
+						}
+					} else {
+						for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
+							if (parameter.parameterID.equals("effects")) {
+								try {
+									//Add all the messages
+									messages.addAll(handleEffectList(event, variables, ((EffectListParameter.Config)parameter).value));
+					    		} catch (Exception e) {
+					    			Logger.error("Exception evaluating effect "+effect.effectID+" in event "+event.name, e);
+					    		}
+							}
+						}
+					}
+				} else {
+					//Normal effect
+					JsonObject json = new JsonObject();
+					json.addProperty("integration", effect.integrationID);
+					json.addProperty("type", effect.effectID);
+					
+					JsonObject parameters = new JsonObject();
+					json.add("values", parameters);
+					
+					for (ParameterConfigBase<?, ?> parameter : effect.parameters) {
+						parameters.add(parameter.parameterID, Util.GSON.fromJson(Util.GSON.toJson(parameter.evaluate(variables)), JsonElement.class));
+					}
+					messages.add(new EffectMessage(effect.integrationID, json));
+				}
+			}
+			return messages;
 		}
 		
 		public void imGui() {
 			for (ParameterConfigBase<?, ?> parameter : this.parameters) {
-				parameter.imGui();
+				parameter.imGui(this);
 			}
 		}
 		

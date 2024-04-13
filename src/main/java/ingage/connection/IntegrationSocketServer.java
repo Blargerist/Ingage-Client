@@ -48,7 +48,8 @@ public class IntegrationSocketServer {
 				
 				if (queue != null) {
 					if (!queue.isEmpty()) {
-						entry.getValue().writeAndFlush(queue.poll().toSend.toString()+"\r\n").await();
+						IntegrationMessage msg = queue.poll();
+						entry.getValue().writeAndFlush(msg.toSend.toString()+"\r\n").await();
 					}
 				}
 			} catch (Exception e) {
