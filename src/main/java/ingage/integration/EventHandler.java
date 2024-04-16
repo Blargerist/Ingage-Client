@@ -99,13 +99,17 @@ public class EventHandler {
 							Profile profile = Util.GSON.fromJson(combined.toString(), Profile.class);
 														
 							for (Event event : profile.events) {
-								for (EffectConfig effect : event.effects) {
-									setEffectConfigData(effect);
+								try {
+									for (EffectConfig effect : event.effects) {
+										setEffectConfigData(effect);
+									}
+								} catch (Exception e) {
+									Logger.error("Error loading event "+event.name+" in profile "+profile.name+":", e);
 								}
 							}
 							EventHandler.profiles.add(profile);
 						} catch (Exception e) {
-							e.printStackTrace();
+							Logger.error("Error loading profile "+fileName+":", e);
 						}
 					}
 				}
