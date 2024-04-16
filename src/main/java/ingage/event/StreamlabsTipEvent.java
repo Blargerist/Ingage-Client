@@ -3,6 +3,8 @@ package ingage.event;
 import java.util.Map;
 
 import imgui.ImGui;
+import imgui.type.ImDouble;
+import imgui.type.ImString;
 
 public class StreamlabsTipEvent extends EventBase {
 	
@@ -11,7 +13,6 @@ public class StreamlabsTipEvent extends EventBase {
 	public String user;
 	public double amount;
 	public String message;
-	public String broadcaster_user_name;
 	
 	public StreamlabsTipEvent() {
 		
@@ -64,4 +65,20 @@ public class StreamlabsTipEvent extends EventBase {
 		return meta;
 	}
 
+	@Override
+	public void imGuiForTesting() {
+		//Broadcaster username
+		ImString broadcasterUsername = new ImString(this.broadcaster_user_name, 1000);
+		
+		if (ImGui.inputText("Broadcaster Name", broadcasterUsername)) {
+			this.broadcaster_user_name = broadcasterUsername.get();
+		}
+		
+		//Amount
+		ImDouble amount = new ImDouble(this.amount);
+		
+		if (ImGui.inputDouble("Amount", amount)) {
+			this.amount = amount.get();
+		}
+	}
 }

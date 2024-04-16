@@ -19,6 +19,11 @@ public abstract class Screen {
 		if (ImGui.button("History")) {
 			Window.screen = HistoryScreen.INSTANCE;
 		}
+		ImGui.sameLine();
+		
+		if (ImGui.button("Testing")) {
+			Window.screen = TestingScreen.INSTANCE;
+		}
 		
 		ImGui.separator();
 	}

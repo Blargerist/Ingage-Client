@@ -1,28 +1,30 @@
 package ingage.event;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonObject;
 
 import imgui.ImGui;
+import imgui.type.ImInt;
+import imgui.type.ImString;
 import ingage.Util;
 
 public class ChatEvent extends EventBase {
 	
 	public Type type = EventBase.Type.CHAT;
 	
-	public String broadcaster_user_id;
-	public String broadcaster_user_login;
-	public String broadcaster_user_name;
 	public String chatter_user_id;
 	public String chatter_user_login;
 	public String chatter_user_name;
 	public String message_id;
-	public Message message;
+	public Message message = new Message();
 	public String color;
 	public Badge[] badges;
 	public String message_type;
-	public Cheer cheer;
+	public Cheer cheer = new Cheer();
 	public Reply reply;
 	public String channel_points_custom_reward_id;
 	
@@ -54,7 +56,7 @@ public class ChatEvent extends EventBase {
 		meta.user = this.getUser();
 		meta.channelName = this.broadcaster_user_name;
 		
-		if (this.message != null) {
+		if (this.message != null && this.message.text != null) {
 			meta.message = this.message.text;
 		}
 		return meta;
@@ -95,7 +97,7 @@ public class ChatEvent extends EventBase {
 	}
 	
 	public boolean isBits() {
-		return this.cheer != null;
+		return this.cheer != null && this.cheer.bits > 0;
 	}
 	
 	public int getBits() {
@@ -159,6 +161,85 @@ public class ChatEvent extends EventBase {
 		
 		
 		return event;
+	}
+
+	@Override
+	public void imGuiForTesting() {
+		//Broadcaster username
+		ImString broadcasterUsername = new ImString(this.broadcaster_user_name, 1000);
+		
+		if (ImGui.inputText("Broadcaster Name", broadcasterUsername)) {
+			this.broadcaster_user_name = broadcasterUsername.get();
+		}
+		
+		//Chatter username
+		ImString chatter = new ImString(this.chatter_user_name != null ? this.chatter_user_name : "", 1000);
+		
+		if (ImGui.inputText("Chatter Name", chatter)) {
+			this.chatter_user_name = chatter.get();
+		}
+		
+		//Message
+		ImString message = new ImString(this.message.text != null ? this.message.text : "", 1000);
+		
+		if (ImGui.inputText("Message", message)) {
+			this.message.text = message.get();
+		}
+		
+		//Bits
+		ImInt bits = new ImInt(this.cheer.bits);
+		
+		if (ImGui.inputInt("Bits", bits)) {
+			this.cheer.bits = bits.get();
+		}
+		
+		//Badges
+		boolean moderator = this.badges != null && Arrays.asList(this.badges).stream().anyMatch((badge) -> { return "moderator".equals(badge.set_id); });
+		
+		if (ImGui.radioButton("Moderator", moderator)) {
+			moderator =! moderator;
+		}
+		boolean subscriber = this.badges != null && Arrays.asList(this.badges).stream().anyMatch((badge) -> { return "subscriber".equals(badge.set_id); });
+		
+		if (ImGui.radioButton("Subscriber", subscriber)) {
+			subscriber =! subscriber;
+		}
+		boolean staff = this.badges != null && Arrays.asList(this.badges).stream().anyMatch((badge) -> { return "staff".equals(badge.set_id); });
+		
+		if (ImGui.radioButton("Staff", staff)) {
+			staff =! staff;
+		}
+		boolean broadcaster = this.badges != null && Arrays.asList(this.badges).stream().anyMatch((badge) -> { return "broadcaster".equals(badge.set_id); });
+		
+		if (ImGui.radioButton("Broadcaster", broadcaster)) {
+			broadcaster =! broadcaster;
+		}
+		
+		//Create new badges array
+		if (moderator || subscriber || staff || broadcaster) {
+			List<Badge> badges = new ArrayList<Badge>();
+			
+			if (moderator) {
+				Badge badge = new Badge();
+				badge.set_id = "moderator";
+			}
+			if (subscriber) {
+				Badge badge = new Badge();
+				badge.set_id = "subscriber";
+			}
+			if (staff) {
+				Badge badge = new Badge();
+				badge.set_id = "staff";
+			}
+			if (broadcaster) {
+				Badge badge = new Badge();
+				badge.set_id = "broadcaster";
+			}
+
+			this.badges = badges.toArray(new Badge[badges.size()]);
+		} else {
+			this.badges = null;
+		}
 	}
 	
 	public static class Message {

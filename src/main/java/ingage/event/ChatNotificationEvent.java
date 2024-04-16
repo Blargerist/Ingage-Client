@@ -5,6 +5,8 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 
 import imgui.ImGui;
+import imgui.type.ImInt;
+import imgui.type.ImString;
 import ingage.Util;
 import ingage.integration.condition.TwitchSubTier;
 
@@ -12,9 +14,6 @@ public class ChatNotificationEvent extends EventBase {
 	
 	public Type type = EventBase.Type.CHAT_NOTIFICATION;
 	
-	public String broadcaster_user_id;
-	public String broadcaster_user_name;
-	public String broadcaster_user_login;
 	public String chatter_user_id;
 	public String chatter_user_login;
 	public String chatter_user_name;
@@ -207,6 +206,118 @@ public class ChatNotificationEvent extends EventBase {
 		
 		
 		return event;
+	}
+
+	@Override
+	public void imGuiForTesting() {
+		//Broadcaster username
+		ImString broadcasterUsername = new ImString(this.broadcaster_user_name, 1000);
+		
+		if (ImGui.inputText("Broadcaster Name", broadcasterUsername)) {
+			this.broadcaster_user_name = broadcasterUsername.get();
+		}
+		
+		//Chatter username
+		ImString chatter = new ImString(this.chatter_user_name != null ? this.chatter_user_name : "", 1000);
+		
+		if (ImGui.inputText("Chatter Name", chatter)) {
+			this.chatter_user_name = chatter.get();
+		}
+		
+		//Sub
+		int[] subType = new int[] { this.resub != null ? 1 : this.sub_gift != null ? 2 : this.community_sub_gift != null ? 3 : 0 };
+		
+		if (ImGui.sliderInt("Notification Type", subType, 0, 3, this.resub != null ? "Sub" : this.sub_gift != null ? "Gift Sub" : this.community_sub_gift != null ? "Sub Bomb" : "None")) {
+			if (subType[0] == 0) {
+				this.resub = null;
+				this.sub_gift = null;
+				this.community_sub_gift = null;
+			}
+			if (subType[0] == 1) {
+				this.resub = new Resub();
+				this.sub_gift = null;
+				this.community_sub_gift = null;
+			}
+			if (subType[0] == 2) {
+				this.resub = null;
+				this.sub_gift = new SubGift();
+				this.community_sub_gift = null;
+			}
+			if (subType[0] == 3) {
+				this.resub = null;
+				this.sub_gift = null;
+				this.community_sub_gift = new CommunityGiftSub();
+			}
+		}
+		
+		if (this.resub != null) {
+			//Tier
+			int[] tier = new int[] { this.resub.sub_tier == null ? 1 : TwitchSubTier.fromTierString(this.resub.sub_tier).ordinal() + 1 };
+			
+			if (ImGui.sliderInt("Tier", tier, 1, 3)) {
+				this.resub.sub_tier = TwitchSubTier.values()[tier[0]-1].tierString;
+			}
+			
+			//Cumulative months
+			ImInt cumulativeMonths = new ImInt(this.resub.cumulative_months);
+			
+			if (ImGui.inputInt("Cumulative Months", cumulativeMonths)) {
+				this.resub.cumulative_months = cumulativeMonths.get();
+			}
+			
+			//Prime
+			if (ImGui.radioButton("Prime", this.resub.is_prime)) {
+				this.resub.is_prime =! this.resub.is_prime;
+			}
+		}
+		
+		if (this.sub_gift != null) {
+			//Recipient
+			ImString recipient = new ImString(this.sub_gift.recipient_user_name != null ? this.sub_gift.recipient_user_name : "", 1000);
+			
+			if (ImGui.inputText("Recipient", recipient)) {
+				this.sub_gift.recipient_user_name = recipient.get();
+			}
+			
+			//Tier
+			int[] tier = new int[] { this.sub_gift.sub_tier == null ? 1 : TwitchSubTier.fromTierString(this.sub_gift.sub_tier).ordinal() + 1 };
+			
+			if (ImGui.sliderInt("Tier", tier, 1, 3)) {
+				this.sub_gift.sub_tier = TwitchSubTier.values()[tier[0]-1].tierString;
+			}
+			
+			//Duration
+			ImInt duration = new ImInt(this.sub_gift.duration_months);
+			
+			if (ImGui.inputInt("Duration", duration)) {
+				this.sub_gift.duration_months = duration.get();
+			}
+			
+			//In sub bomb
+			if (ImGui.radioButton("In Sub Bomb", this.sub_gift.community_gift_id != null)) {
+				if (this.sub_gift.community_gift_id != null) {
+					this.sub_gift.community_gift_id = null;
+				} else {
+					this.sub_gift.community_gift_id = "";
+				}
+			}
+		}
+		
+		if (this.community_sub_gift != null) {
+			//Tier
+			int[] tier = new int[] { this.community_sub_gift.sub_tier == null ? 1 : TwitchSubTier.fromTierString(this.community_sub_gift.sub_tier).ordinal() + 1 };
+			
+			if (ImGui.sliderInt("Tier", tier, 1, 3)) {
+				this.community_sub_gift.sub_tier = TwitchSubTier.values()[tier[0]-1].tierString;
+			}
+			
+			//Count
+			ImInt count = new ImInt(this.community_sub_gift.total);
+			
+			if (ImGui.inputInt("Count", count)) {
+				this.community_sub_gift.total = count.get();
+			}
+		}
 	}
 	
 	public static class Announcement {

@@ -1,15 +1,14 @@
 package ingage.event;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import imgui.ImGui;
+import imgui.type.ImString;
 
 public class HypeTrainBeginEvent extends EventBase {
 	
 	public String id;
-	public String broadcaster_user_id;
-	public String broadcaster_user_login;
-	public String broadcaster_user_name;
 	public int total;
 	public int goal;
 	public Contributor[] top_contributions;
@@ -50,6 +49,16 @@ public class HypeTrainBeginEvent extends EventBase {
 		meta.channelName = this.broadcaster_user_name;
 		return meta;
 	}
+
+	@Override
+	public void imGuiForTesting() {
+		//Broadcaster username
+		ImString broadcasterUsername = new ImString(this.broadcaster_user_name, 1000);
+		
+		if (ImGui.inputText("Broadcaster Name", broadcasterUsername)) {
+			this.broadcaster_user_name = broadcasterUsername.get();
+		}
+	}
 	
 	public static class Contributor {
 		public String user_id;
@@ -59,9 +68,23 @@ public class HypeTrainBeginEvent extends EventBase {
 		public int total;
 		
 		public static enum Type {
-			bits,
-			subscription,
-			other;
+			bits("Bits"),
+			subscription("Sub"),
+			other("Other");
+			
+			private String displayName;
+			
+			private Type(String displayName) {
+				this.displayName = displayName;
+			}
+			
+			public String getDisplayName() {
+				return this.displayName;
+			}
+			
+			public static String[] getDisplayNames() {
+				return Arrays.asList(Type.values()).stream().map((s) -> s.getDisplayName()).toArray(String[]::new);
+			}
 		}
 	}
 }
