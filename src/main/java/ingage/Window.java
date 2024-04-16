@@ -1,6 +1,7 @@
 package ingage;
 
 import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
 import imgui.app.Application;
 import imgui.app.Configuration;
@@ -21,7 +22,9 @@ public class Window extends Application {
     
     @Override
     protected void preRun() {
-    	
+    	//Get rid of the ini file
+        ImGuiIO io = ImGui.getIO();
+        io.setIniFilename(null);
     }
     
     @Override
