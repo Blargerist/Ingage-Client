@@ -39,35 +39,39 @@ public class EventHandler {
 	}
 
 	public static void handleEvent(EventBase connectionEvent, boolean replay) {
-		if (!replay) {
-			HistoryManager.handleEvent(connectionEvent);
-			DataManager.handleEvent(connectionEvent);
-		}
-		//Create metadata
-		Metadata metadata = connectionEvent.getMetadata();
-		
-		for (Profile profile : EventHandler.profiles) {
-			//Skip disabled profiles
-			if (!profile.enabled) {
-				continue;
+		try {
+			if (!replay) {
+				HistoryManager.handleEvent(connectionEvent);
+				DataManager.handleEvent(connectionEvent);
 			}
-			for (Event event : profile.events) {
-				if (event.test(connectionEvent)) {
-					//Send effects
-					List<EffectMessage> list = event.getEffectMessages(connectionEvent);
-					
-					for (EffectMessage msg : list) {
-						msg.toSend.add("metadata", Util.GSON.toJsonTree(metadata));
+			//Create metadata
+			Metadata metadata = connectionEvent.getMetadata();
+			
+			for (Profile profile : EventHandler.profiles) {
+				//Skip disabled profiles
+				if (!profile.enabled) {
+					continue;
+				}
+				for (Event event : profile.events) {
+					if (event.test(connectionEvent)) {
+						//Send effects
+						List<EffectMessage> list = event.getEffectMessages(connectionEvent);
 						
-						JsonObject toSend = new JsonObject();
-						toSend.addProperty("type", "EFFECT");
-						toSend.add("payload", msg.toSend);
-																		
-						IntegrationWebSocketServer.queueIntegrationMessage(msg.integrationID, toSend);
-						IntegrationSocketServer.queueIntegrationMessage(msg.integrationID, toSend);
+						for (EffectMessage msg : list) {
+							msg.toSend.add("metadata", Util.GSON.toJsonTree(metadata));
+							
+							JsonObject toSend = new JsonObject();
+							toSend.addProperty("type", "EFFECT");
+							toSend.add("payload", msg.toSend);
+																			
+							IntegrationWebSocketServer.queueIntegrationMessage(msg.integrationID, toSend);
+							IntegrationSocketServer.queueIntegrationMessage(msg.integrationID, toSend);
+						}
 					}
 				}
 			}
+		} catch(Exception e) {
+			Logger.error(e);
 		}
 	}
 	
