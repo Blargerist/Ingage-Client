@@ -52,6 +52,7 @@ import io.netty.util.concurrent.Future;
 public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 	
 	public static Instant lastMessageTime = Instant.now();
+	private static final Object lockObj = new Object();
 	
 	private static EventLoopGroup group = null;
 	private static final String NONCE = UUID.randomUUID().toString();
@@ -345,7 +346,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 		startDestroy();
 		waitDestroy();
 		
-		synchronized(lastMessageTime) {
+		synchronized(lockObj) {
 			int port = 443;
 	        try {
 	    		URI uri = new URI("wss://eventsub.wss.twitch.tv/ws");
@@ -409,7 +410,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 	private static Future<?> groupShutdown = null;
 	
 	public static void startDestroy() {
-		synchronized(lastMessageTime) {
+		synchronized(lockObj) {
 			if (group != null) {
 				groupShutdown = group.shutdownGracefully();
 			}
@@ -417,7 +418,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 	}
 	
 	public static void waitDestroy() {
-		synchronized(lastMessageTime) {
+		synchronized(lockObj) {
 			if (group != null) {
 		        try {
 		        	groupShutdown.sync();
