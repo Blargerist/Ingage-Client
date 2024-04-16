@@ -13,6 +13,7 @@ import ingage.event.ChatEvent;
 import ingage.event.ChatNotificationEvent;
 import ingage.event.EventBase;
 import ingage.event.HypeTrainEndEvent;
+import ingage.event.StreamlabsTipEvent;
 
 public class DataManager {
 
@@ -96,6 +97,12 @@ public class DataManager {
 				if (event.level > currentDayData.hypeTrainHighestLevel) {
 					currentDayData.hypeTrainHighestLevel = event.level;
 				}
+			}
+			//Streamlabs tips
+			if (connectionEvent instanceof StreamlabsTipEvent) {
+				StreamlabsTipEvent event = (StreamlabsTipEvent)connectionEvent;
+				
+				currentDayData.streamLabsTips += event.amount;
 			}
 			//Save new data
 			save();

@@ -16,4 +16,6 @@ public class Data {
 	public int hypeTrains;
 	public int hypeTrainTotalLevels;
 	public int hypeTrainHighestLevel;
+	
+	public double streamLabsTips;
 }
