@@ -2,8 +2,13 @@
 plugins {
     id 'application'
 	id 'java'
-    //Shadow jar
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+	id "org.panteleyev.jpackageplugin" version "1.6.0"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
@@ -33,8 +38,59 @@ dependencies {
 	implementation "io.socket:socket.io-client:1.0.1"
 }
 
-shadowJar {
-   archiveBaseName.set('Ingage')
-   archiveClassifier.set('')
-   archiveVersion.set('')
+application {
+	mainClass.set("ingage.IngageClient")
 }
+
+task copyDependencies(type: Copy) {
+	from(configurations.runtimeClasspath).into("$buildDir/jars")
+}
+
+task copyJar(type: Copy) {
+    from(tasks.jar).into("$buildDir/jars")
+}
+
+jar {
+	archiveFileName = 'Ingage Client.jar'
+	manifest {
+		attributes 'Main-Class': 'ingage.IngageClient'
+	}
+}
+
+tasks.compileJava {
+	dependsOn clean
+}
+
+tasks.jpackage {
+    dependsOn build, copyDependencies, copyJar
+
+    input  = "$buildDir/jars"
+    destination = "$buildDir/dist"
+
+    appName = "Ingage Client"
+	appVersion = '1.0.0'
+
+    mainJar = tasks.jar.archiveFileName.get()
+    mainClass = "ingage.IngageClient"
+
+    windows {
+		winDirChooser = true
+		winShortcutPrompt = true
+		winMenu = true
+		winShortcut = true
+		winPerUserInstall = true
+    }
+}
+
+task renameInstaller(type: Copy) {
+	from layout.buildDirectory.dir("dist")
+    into layout.buildDirectory.dir("dist")
+    rename tasks.jpackage.appName+"-"+tasks.jpackage.appVersion+".exe", tasks.jpackage.appName+" Installer-v"+tasks.jpackage.appVersion+".exe"
+}
+
+task deleteOldInstaller(type: Delete) {
+	dependsOn renameInstaller
+	delete layout.buildDirectory.file("dist/"+tasks.jpackage.appName+"-"+tasks.jpackage.appVersion+".exe")
+}
+
+jpackage.finalizedBy deleteOldInstaller
