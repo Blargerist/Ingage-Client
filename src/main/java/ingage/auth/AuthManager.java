@@ -85,11 +85,6 @@ public class AuthManager {
 		if (token.isEmpty()) {
 			return;
 		}
-//		TwitchGetUsersResponse getUsers = HTTPRequests.getUsernameAndID(token);
-//		
-//		if (getUsers == null || getUsers.data.length == 0) {
-//			return;
-//		}
 		
 		StreamlabsUser user = new StreamlabsUser(token, "");
 		

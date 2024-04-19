@@ -37,61 +37,32 @@ public class TwitchOAuthHTTPServer extends SimpleChannelInboundHandler<Object> {
 	
 	private static EventLoopGroup bossGroup = null;
 	private static EventLoopGroup workerGroup = null;
-//	private static HttpRequest request = null;
 
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 		ctx.flush();
 	}
-	
-//	private static final byte[] CONTENT = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd' };
-	
+		
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-//		Logger.log("Recieved something oauth " + msg.getClass().toString());
 		if (msg instanceof HttpRequest) {
-//			Logger.log("request");
 			HttpRequest request = (HttpRequest) msg;
 			
 			if (HttpUtil.is100ContinueExpected(request)) {
 		        writeResponse(ctx);
 		    }
-//			Logger.log("uri " + request.uri());
 			String uri = request.uri();
 			
-//			FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
-//                    Unpooled.wrappedBuffer(CONTENT));
-//            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
-//            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-//
-//            response.headers().set(HttpHeaderNames.CONNECTION, Values.KEEP_ALIVE);
-//            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-//            ctx.write(response);
-			
 			if (uri.equals("/User/ReceiveTwitchOAuth")) {
-//				Logger.log("oauth");
 				String responseStr = 
 						"<HTML>" +
                                 "<BODY>" +
                                 "<script>" +
-//                                "document.body.innerHTML = document.location.hash;" +
                                 "var xhr = new XMLHttpRequest();" +
-//                                "var params = document.location.hash;" +
                                 "xhr.open('POST', 'http://localhost:8080/twitch/oauth/fragment', true);" +
                                 "xhr.setRequestHeader('Content-Type', 'application/json');" +
-//                                "xhr.onload = function() {" +
-//                                "document.body.innerHTML = 'test';"+
-//                                "};"+
                                 "xhr.send(JSON.stringify({fragment: document.location.hash}));" +
                                 "window.location.href = 'http://www.google.com';" +
-//                                "window.close();" +
-//"fetch('http://localhost:8080/twitch/oauth/fragment?document.location.hash').then(function(response) {"+
-//	  "return response.json();"+
-//	"}).then(function(data) {"+
-//	  "console.log(data);"+
-//	"}).catch(function() {"+
-//	  "console.log('Booo');"+
-//	"});"+
                                 "</script>" +
                                 "</BODY>" +
                                 "</HTML>";
@@ -103,21 +74,10 @@ public class TwitchOAuthHTTPServer extends SimpleChannelInboundHandler<Object> {
 				httpResponse.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 				ctx.write(httpResponse);
 				
-			} else if (uri.equals("/twitch/oauth/fragment")) {
-//				Logger.log("fragment");
-//				
-//				Logger.log(request.decoderResult().toString());
 			}
 		}
 		if (msg instanceof HttpContent) {
-//			Logger.log("content");
 			HttpContent content = (HttpContent) msg;
-
-//			Logger.log("uri " + content.);
-//			String uri = content..uri();
-			
-//			if (uri.equals("/twitch/oauth/fragment")) {
-//				Logger.log("content");
 				
 			ByteBuf cntn = content.content();
 			
@@ -133,21 +93,12 @@ public class TwitchOAuthHTTPServer extends SimpleChannelInboundHandler<Object> {
 					String token = args.get("access_token");
 
 	                if (token != null) {
-//						Logger.log("Token: " + token);
 						
 						AuthManager.onTwitchOAuth(token, true);
-//						if (Util.isNullOrEmpty(AuthManager.Keys.getTwitchAuthToken()) || !AuthManager.Keys.getTwitchAuthToken().equals(token)) {
-//							AuthManager.Keys.setTwitchAuthToken(token);
-//							ThreadManager.runOnMainThread(() -> {
-//								ConnectionManager.initPostOAuth();
-//							});
-//						}
 						ctx.close();
 	                }
 				}
 			}
-//				content.release();
-//			}
 		}
 	}
 	
@@ -192,7 +143,6 @@ public class TwitchOAuthHTTPServer extends SimpleChannelInboundHandler<Object> {
                  @Override
                  public void initChannel(SocketChannel ch) throws Exception {
                 	 ch.pipeline().addLast("decoder", new HttpServerCodec());
-//                	 ch.pipeline().addLast("encoder", new HttpRequestEncoder());
                      ch.pipeline().addLast(new TwitchOAuthHTTPServer());
                  }
              })
@@ -203,7 +153,6 @@ public class TwitchOAuthHTTPServer extends SimpleChannelInboundHandler<Object> {
             ChannelFuture f = b.bind(port).sync(); // (7)
             Logger.log("Socket bound on " + port);
             
-            //f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
 			Logger.error(e);
 		}

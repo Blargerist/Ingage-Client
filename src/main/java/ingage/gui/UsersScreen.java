@@ -26,9 +26,7 @@ public class UsersScreen extends Screen {
 		streamlabsUsers.addAll(AuthManager.getStreamlabsUsers());
 		
 		super.imGui();
-		
-		ImGui.text("Users");
-		
+				
 		if (ImGui.button("Add Twitch Account")) {
 			AuthManager.twitchOAuth();
 		}

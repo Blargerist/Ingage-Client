@@ -37,35 +37,30 @@ public class TwitchSubCondition extends ConditionBase {
 		
 		//Test against month range
 		if (cumulativeMonths < this.minCumulativeMonths || cumulativeMonths > this.maxCumulativeMonths) {
-//			Logger.log("Month range failed: "+ cumulativeMonths+" "+this.minCumulativeMonths+"/"+this.maxCumulativeMonths);
 			return false;
 		}
 		boolean isGift = e.isGiftSub();
 		
 		//Test against gift rule
 		if ((isGift && this.gift == GiftCondition.REQUIRE_FALSE) || (!isGift && this.gift == GiftCondition.REQUIRE_TRUE)) {
-//			Logger.log("Gift failed: "+ isGift+" "+this.gift);
 			return false;
 		}
 		int tier = e.getSubTier().ordinal() + 1;
 		
 		//Test against tier range
 		if (tier < this.minTier || tier > this.maxTier) {
-//			Logger.log("Tier range failed: "+ tier+" "+this.minTier+"/"+this.maxTier);
 			return false;
 		}
 		boolean isPrime = e.isPrime();
 		
 		//Test against prime rule
 		if ((isPrime && this.prime == PrimeCondition.REQUIRE_FALSE) || (!isPrime && this.prime == PrimeCondition.REQUIRE_TRUE)) {
-//			Logger.log("Prime failed: "+ isPrime+" "+this.prime);
 			return false;
 		}
 		int duration = Math.max(1, e.getSubDuration());
 		
 		//Test against month range
 		if (duration < this.minDuration || duration > this.maxDuration) {
-//			Logger.log("Duration range failed: "+ duration+" "+this.minDuration+"/"+this.maxDuration);
 			return false;
 		}
 		boolean inSubBomb = e.isPartOfSubBomb();

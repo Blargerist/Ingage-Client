@@ -31,7 +31,6 @@ import ingage.integration.effect.parameter.ParameterType;
 public class EventHandler {
 	
 	public static final File PROFILES_FOLDER = new File("./data/profiles/");
-//	public static List<Event> events = new ArrayList<Event>();
 	public static List<Profile> profiles = new ArrayList<Profile>();
 
 	public static void handleEvent(EventBase connectionEvent) {

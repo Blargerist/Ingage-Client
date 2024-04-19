@@ -59,17 +59,4 @@ public class Window extends Application {
     public static void launch() {
     	Window.launch(Window.INSTANCE);
     }
-//    
-//    public static void launch(final Window app) {        
-//        app.preRun();
-//        app.run();
-//        app.postRun();
-//        app.dispose();
-//    }
-//
-//    public static void initializeWindow(final Window app) {
-//        final Configuration config = new Configuration();
-//        app.configure(config);
-//        app.init(config);
-//    }
 }

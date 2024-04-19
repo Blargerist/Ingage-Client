@@ -92,28 +92,6 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
                 handshaker.finishHandshake(ch, (FullHttpResponse) msg);
                 Logger.log("WebSocket Client connected!");
                 handshakeFuture.setSuccess();
-                
-//                //Listen
-//                JSONObject listen = new JSONObject();
-//        		JSONObject data = new JSONObject();
-//        		JSONArray topics = new JSONArray();
-//        		try {
-//        			listen.put("type", "LISTEN");
-//        			listen.put("nonce", NONCE);
-//        			listen.put("data", data);
-//        			twitchChannelID = AuthManager.twitchChannelID;
-//        			topics.put("channel-points-channel-v1." + AuthManager.twitchChannelID);
-//        			topics.put("channel-bits-events-v2." + AuthManager.twitchChannelID);
-//        			topics.put("channel-subscribe-events-v1." + AuthManager.twitchChannelID);
-//        			data.put("topics", topics);
-//        			data.put("auth_token", AuthManager.Keys.getTwitchAuthToken());
-//        			WebSocketFrame frame = new TextWebSocketFrame(listen.toString());
-//                    ch.writeAndFlush(frame);
-//                    
-//                    ping(ctx);
-//        		} catch (JSONException e) {
-//        			Logger.error(e);
-//        		}
             } catch (WebSocketHandshakeException e) {
                 Logger.log("WebSocket Client failed to connect");
                 handshakeFuture.setFailure(e);
@@ -383,24 +361,6 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 	            handler.handshakeFuture().sync();
 
 	            Logger.log("PubSub Socket bound");
-
-//	            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-//	            while (true) {
-//	                String msg = console.readLine();
-//	                if (msg == null) {
-//	                    break;
-//	                } else if ("bye".equals(msg.toLowerCase())) {
-//	                    ch.writeAndFlush(new CloseWebSocketFrame());
-//	                    ch.closeFuture().sync();
-//	                    break;
-//	                } else if ("ping".equals(msg.toLowerCase())) {
-//	                    WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[] { 8, 1, 8, 1 }));
-//	                    ch.writeAndFlush(frame);
-//	                } else {
-//	                    WebSocketFrame frame = new TextWebSocketFrame(msg);
-//	                    ch.writeAndFlush(frame);
-//	                }
-//	            }
 	        } catch (Exception e) {
 	        	Logger.error(e);
 	        }
@@ -431,83 +391,4 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 			}
 		}
 	}
-	
-//	public static class SubGroup {
-//		private static final Map<String, SubGroup> groups = new HashMap<String, SubGroup>();
-//		
-//		private Instant lastReceived;
-//		private final String from;
-//		private final List<String> recipients = new ArrayList<String>();
-//		private final int tier;
-//		private final List<TwitchSub> events = new ArrayList<TwitchSub>();
-//		
-//		private SubGroup(String from, int tier) {
-//			this.from = from;
-//			this.tier = tier;
-//			lastReceived = Instant.now();
-//		}
-//		
-//		private void addtoGroup(TwitchSub event) {
-//			this.events.add(event);
-//			this.recipients.add(event.recipient);
-//			lastReceived = Instant.now();
-//		}
-//		
-//		private void remove() {
-//			groups.remove(this.from);
-//			int months = 0;
-//			
-//			for (TwitchSub event : this.events) {
-//				months += event.cumulativeMonths;
-//				if (this.events.size() > 1) {
-//					event.inGroup = true;
-//				} else {
-//					event.inGroup = false;
-//				}
-//				event.mod = HTTPRequests.isModerator(event.recipientID);
-//				event.vip = HTTPRequests.isVIP(event.recipientID);
-//	            IntegrationManager.handleEvent(event, false);
-//			}
-//			if (this.events.size() > 1) {//Don't count single subs as groups
-//				TwitchSubGroup group = new TwitchSubGroup(Instant.now(), this.from, this.events.size(), this.recipients, this.tier, months);
-//	            IntegrationManager.handleEvent(group, false);
-//				Logger.log("handle group sub " + group.cumulativeMonths + " " + group.tier + " " + group.sender + " " + group.count);
-//			}
-//		}
-//		
-//		public static void add(TwitchSub event) {
-//			synchronized(groups) {
-//				if (!groups.containsKey(event.sender)) {
-//					groups.put(event.sender(), new SubGroup(event.sender, event.tier));
-//				}
-//				SubGroup group = groups.get(event.sender);
-//				
-//				if (group.from.equals(event.sender) && group.tier == event.tier) {
-//					group.addtoGroup(event);
-//				} else {
-//					group.remove();
-//					groups.put(event.sender(), new SubGroup(event.sender, event.tier));
-//					group = groups.get(event.sender);
-//					group.addtoGroup(event);
-//				}
-//			}
-//		}
-//		
-//		public static void test() {
-//			synchronized(groups) {
-//				List<SubGroup> toRemove = new ArrayList<SubGroup>();
-//				
-//				for (Entry<String, SubGroup> entry : groups.entrySet()) {
-//					long millisSince = entry.getValue().lastReceived.until(Instant.now(), ChronoUnit.MILLIS);
-//					
-//					if (millisSince >= 100) {
-//						toRemove.add(entry.getValue());
-//					}
-//				}
-//				for (SubGroup group : toRemove) {
-//					group.remove();
-//				}
-//			}
-//		}
-//	}
 }
