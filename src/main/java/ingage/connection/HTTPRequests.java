@@ -22,9 +22,11 @@ public class HTTPRequests {
 	public static void initTwitchOAuth(String clientID) {// TODO: Needs to use state
 		String redirect_uri = "http://localhost:8080/User/ReceiveTwitchOAuth";
 		String response_type = "token";
-		String[] scopes = new String[] { "bits:read", "channel:read:redemptions", "channel:manage:redemptions",
-				"channel:read:subscriptions", "channel:read:hype_train", "chat:read", "chat:edit", "moderation:read",
-				"channel:read:vips", "user:read:chat" };
+		String[] scopes = new String[] {
+			"channel:read:redemptions",//For listening to channel points redemptions on eventsub
+			"channel:read:hype_train",//For listening to hype train on eventsub
+			"user:read:chat"//For listening to chat on eventsub
+		};
 		StringBuilder scopeBuilder = new StringBuilder();
 		scopeBuilder.append(scopes[0]);
 
