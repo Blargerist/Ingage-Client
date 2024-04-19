@@ -20,7 +20,7 @@ public class IntegrationManager {
 	public static final List<Integration> integrations = new ArrayList<Integration>();
 	//For gui
 	public static String[] integrationDisplayNames = new String[] {};
-	public static final String INTEGRATIONS_FOLDER = "./integrations/";
+	public static final String INTEGRATIONS_FOLDER = "./data/integrations/";
 	
 	public static Integration getIntegration(String id) {
 		for (Integration integration : integrations) {

@@ -23,7 +23,7 @@ public class DataManager {
 	private static int currentYear = lastSave.get(Calendar.YEAR);
 	private static int currentMonth = lastSave.get(Calendar.MONTH);
 	private static int currentDayOfMonth = lastSave.get(Calendar.DAY_OF_MONTH);
-	private static File currentDayFile = new File("./data/"+currentYear+"/"+String.format("%02d", currentMonth+1)+"/"+String.format("%02d", currentDayOfMonth)+".json");
+	private static File currentDayFile = new File("./data/stats/"+currentYear+"/"+String.format("%02d", currentMonth+1)+"/"+String.format("%02d", currentDayOfMonth)+".json");
 	
 	public static void init() {
 		load();
