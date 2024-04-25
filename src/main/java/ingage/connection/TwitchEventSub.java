@@ -81,7 +81,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        Logger.log("WebSocket Client disconnected!");
+        Logger.log("Eventsub disconnected!");
     }
 
     @Override
@@ -90,10 +90,10 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
         if (!handshaker.isHandshakeComplete()) {
             try {
                 handshaker.finishHandshake(ch, (FullHttpResponse) msg);
-                Logger.log("WebSocket Client connected!");
+                Logger.log("Eventsub connected!");
                 handshakeFuture.setSuccess();
             } catch (WebSocketHandshakeException e) {
-                Logger.log("WebSocket Client failed to connect");
+                Logger.log("Eventsub failed to connect");
                 handshakeFuture.setFailure(e);
             }
             return;
@@ -364,7 +364,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 	            ChannelFuture f = b.connect(uri.getHost(), port).sync();
 	            handler.handshakeFuture().sync();
 
-	            Logger.log("PubSub Socket bound");
+	            Logger.log("Eventsub Socket bound");
 	        } catch (Exception e) {
 	        	Logger.error(e);
 	        }
@@ -386,7 +386,7 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
 			if (group != null) {
 		        try {
 		        	groupShutdown.sync();
-		            Logger.log("Twitch pubsub Group shut down");
+		            Logger.log("Twitch eventsub Group shut down");
 				} catch (InterruptedException e) {
 					Logger.error(e);
 				}
