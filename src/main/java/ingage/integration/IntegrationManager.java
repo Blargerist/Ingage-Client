@@ -1,8 +1,10 @@
 package ingage.integration;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -35,6 +37,26 @@ public class IntegrationManager {
 		
 	}
 	
+	public static void addIntegration(Integration integration) {
+		for (EffectBase effect : integration.effects) {
+			effect.integration = integration;
+			
+			for (ParameterBase<?, ?> parameter : effect.parameters) {
+				parameter.effect = effect;
+			}
+		}
+		integration.buildDisplayNamesArray();
+		
+		IntegrationManager.integrations.add(integration);
+		
+		//Save new integration
+		try {
+			Files.write(new File(IntegrationManager.INTEGRATIONS_FOLDER, integration.id+".json").toPath(), Util.GSON.toJson(integration).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+		} catch (IOException e) {
+			Logger.error(e);
+		}
+	}
+	
 	public static void load() {
 		integrations.clear();
 		
@@ -50,7 +72,7 @@ public class IntegrationManager {
 				if (file.isFile()) {
 					String fileName = file.getName();
 					
-					if (fileName.equalsIgnoreCase("Integration.json")) {
+					if (fileName.endsWith(".json")) {
 						try {
 							StringBuilder combined = new StringBuilder();
 							
@@ -73,7 +95,7 @@ public class IntegrationManager {
 								IntegrationManager.integrations.add(integration);
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
+							Logger.error(e);
 						}
 					}
 				}

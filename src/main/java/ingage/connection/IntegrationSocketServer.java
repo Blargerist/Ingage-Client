@@ -12,6 +12,10 @@ import com.google.gson.JsonObject;
 
 import ingage.Logger;
 import ingage.Util;
+import ingage.gui.IntegrationEventsScreen;
+import ingage.integration.EventHandler;
+import ingage.integration.Integration;
+import ingage.integration.IntegrationManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -137,7 +141,7 @@ public class IntegrationSocketServer {
 		@Override
 		protected void initChannel(SocketChannel ch) throws Exception {
 			//Line delimiter
-			ch.pipeline().addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+			ch.pipeline().addLast(new DelimiterBasedFrameDecoder(65536, Delimiters.lineDelimiter()));
 			ch.pipeline().addLast(DECODER);
 			ch.pipeline().addLast(ENCODER);
 			ch.pipeline().addLast(new Handler());
@@ -173,6 +177,34 @@ public class IntegrationSocketServer {
 					}
 					case "CLOSE": {
 						ctx.close();
+						break;
+					}
+					case "INTEGRATION": {
+						JsonObject payload = json.get("payload").getAsJsonObject();
+						
+						Integration integration = Util.GSON.fromJson(payload.toString(), Integration.class);
+						
+						if (integration != null) {
+							Integration currentIntegration = IntegrationManager.getIntegration(integration.id);
+							
+							if (currentIntegration != null) {
+								String oldStr = Util.GSON.toJson(currentIntegration);
+								String newStr = Util.GSON.toJson(integration);
+								
+								//If there's already an integration with that id and the serialized string is the same, ignore
+								if (oldStr.equals(newStr)) {
+									Logger.log("Ignoring duplicate integration");
+									break;
+								}
+							}
+							//Add the integration
+							IntegrationManager.addIntegration(integration);
+							//Reload profiles so they use the new version
+							Logger.log("Received new integration. Reloading.");
+							EventHandler.load();
+							//Update profiles on config screen
+							IntegrationEventsScreen.INSTANCE.updateProfiles();
+						}
 						break;
 					}
 				}
