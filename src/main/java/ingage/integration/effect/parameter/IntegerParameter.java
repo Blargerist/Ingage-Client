@@ -5,6 +5,7 @@ import java.util.Map;
 import imgui.ImGui;
 import imgui.type.ImString;
 import ingage.integration.effect.EffectBase.EffectConfig;
+import io.netty.util.internal.StringUtil;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class IntegerParameter extends ParameterBase<String, Integer> {
@@ -51,6 +52,11 @@ public class IntegerParameter extends ParameterBase<String, Integer> {
 				
 				if (ImGui.inputText(this.parameter.display, value)) {
 					this.value = value.get();
+				}
+				if (!StringUtil.isNullOrEmpty(this.parameter.description)) {
+					if (ImGui.isItemHovered()) {
+						ImGui.setTooltip(this.parameter.description);
+					}
 				}
 			}
 		}

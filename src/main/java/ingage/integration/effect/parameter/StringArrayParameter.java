@@ -5,6 +5,7 @@ import java.util.Map;
 import imgui.ImGui;
 import imgui.type.ImString;
 import ingage.integration.effect.EffectBase.EffectConfig;
+import io.netty.util.internal.StringUtil;
 
 public class StringArrayParameter extends ParameterBase<String[], String[]> {
 	@Override
@@ -62,6 +63,11 @@ public class StringArrayParameter extends ParameterBase<String[], String[]> {
 				
 				if (ImGui.inputTextMultiline(this.parameter.display, value, 300, (ImGui.getFontSize() + ImGui.getStyle().getFramePaddingY()) * Math.max(2, this.value.length + 1))) {
 					this.value = value.get().trim().split("\n");
+				}
+				if (!StringUtil.isNullOrEmpty(this.parameter.description)) {
+					if (ImGui.isItemHovered()) {
+						ImGui.setTooltip(this.parameter.description);
+					}
 				}
 			}
 		}

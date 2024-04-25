@@ -4,6 +4,7 @@ import java.util.Map;
 
 import imgui.ImGui;
 import ingage.integration.effect.EffectBase.EffectConfig;
+import io.netty.util.internal.StringUtil;
 
 public class BooleanParameter extends ParameterBase<Boolean, Boolean> {
 	@Override
@@ -47,6 +48,11 @@ public class BooleanParameter extends ParameterBase<Boolean, Boolean> {
 			if (this.parameter != null) {
 				if (ImGui.radioButton(this.parameter.display, this.value)) {
 					this.value =! this.value;
+				}
+				if (!StringUtil.isNullOrEmpty(this.parameter.description)) {
+					if (ImGui.isItemHovered()) {
+						ImGui.setTooltip(this.parameter.description);
+					}
 				}
 			}
 		}

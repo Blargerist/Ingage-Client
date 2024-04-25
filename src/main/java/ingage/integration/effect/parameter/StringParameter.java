@@ -5,6 +5,7 @@ import java.util.Map;
 import imgui.ImGui;
 import imgui.type.ImString;
 import ingage.integration.effect.EffectBase.EffectConfig;
+import io.netty.util.internal.StringUtil;
 
 public class StringParameter extends ParameterBase<String, String> {
 	@Override
@@ -50,6 +51,11 @@ public class StringParameter extends ParameterBase<String, String> {
 				
 				if (ImGui.inputText(this.parameter.display, value)) {
 					this.value = value.get();
+				}
+			}
+			if (!StringUtil.isNullOrEmpty(this.parameter.description)) {
+				if (ImGui.isItemHovered()) {
+					ImGui.setTooltip(this.parameter.description);
 				}
 			}
 		}
