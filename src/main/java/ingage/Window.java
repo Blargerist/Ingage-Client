@@ -25,6 +25,13 @@ public class Window extends Application {
     	//Get rid of the ini file
         ImGuiIO io = ImGui.getIO();
         io.setIniFilename(null);
+        
+        //Set window icon
+        try {
+        	Util.setWindowIcon(this.handle, "assets/icons/icon16.png", "assets/icons/icon32.png");
+        } catch (Exception e) {
+        	Logger.error(e);
+        }
     }
     
     @Override

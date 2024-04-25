@@ -1,9 +1,17 @@
 package ingage;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.glfw.GLFWImage.Buffer;
+import org.lwjgl.stb.STBImage;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
@@ -55,5 +63,46 @@ public class Util {
 			}
 		}
 		return i;
+	}
+	
+	public static void setWindowIcon(long window, String... paths) throws Exception {
+		Buffer imageBuffer = GLFWImage.malloc(paths.length);
+		
+		List<GLFWImage> structs = new ArrayList<GLFWImage>();
+		List<ByteBuffer> buffers = new ArrayList<ByteBuffer>();
+		
+		for (int i = 0; i < paths.length; i++) {
+			InputStream stream = Util.class.getClassLoader().getResourceAsStream(paths[i]);
+			byte[] bytes = stream.readAllBytes();
+			ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length).put(bytes).flip();
+			int[] widthBuff = new int[1];
+			int[] heightBuff = new int[1];
+			int[] channelsBuff = new int[1];
+			
+			ByteBuffer pixels = STBImage.stbi_load_from_memory(buffer, widthBuff, heightBuff, channelsBuff, 4);
+			
+			if (pixels == null) {
+				throw new Exception();
+			}
+			pixels.flip();
+			
+			int width = widthBuff[0];
+			int height = heightBuff[0];
+			
+			GLFWImage image = GLFWImage.malloc().set(width, height, pixels);
+			imageBuffer.put(i, image);
+			
+			structs.add(image);
+			buffers.add(pixels);
+		}
+
+    	GLFW.glfwSetWindowIcon(window, imageBuffer);
+    	
+    	//Free memory
+    	for (int i = 0; i < paths.length; i++) {
+    		structs.get(i).free();
+			STBImage.stbi_image_free(buffers.get(i));
+    	}
+    	imageBuffer.free();
 	}
 }

@@ -33,6 +33,10 @@ dependencies {
     
     //Apache commons
     implementation 'org.apache.commons:commons-collections4:4.5.0-M1'
+    
+    //STB image
+	implementation "org.lwjgl:lwjgl-stb"
+	runtimeOnly "org.lwjgl:lwjgl-stb::natives-windows"
 	
 	//Socket.IO
 	implementation "io.socket:socket.io-client:1.0.1"
@@ -79,6 +83,7 @@ tasks.jpackage {
 		winMenu = true
 		winShortcut = true
 		winPerUserInstall = true
+		icon = "icons.ico"
     }
 }
 
