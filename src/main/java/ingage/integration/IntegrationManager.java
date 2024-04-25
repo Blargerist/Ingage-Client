@@ -48,10 +48,13 @@ public class IntegrationManager {
 		integration.buildDisplayNamesArray();
 		
 		IntegrationManager.integrations.add(integration);
+
+		File integrationsFolder = new File(IntegrationManager.INTEGRATIONS_FOLDER);
+		integrationsFolder.mkdirs();
 		
 		//Save new integration
 		try {
-			Files.write(new File(IntegrationManager.INTEGRATIONS_FOLDER, integration.id+".json").toPath(), Util.GSON.toJson(integration).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+			Files.write(new File(integrationsFolder, integration.id+".json").toPath(), Util.GSON.toJson(integration).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 		} catch (IOException e) {
 			Logger.error(e);
 		}
