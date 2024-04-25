@@ -20,6 +20,8 @@ public class IngageClient {
     		ConnectionManager.cleanUp();
     		return;
     	}
+    	//Load config
+    	ConfigManager.load();
     	//Initialize history manager
     	HistoryManager.init();
     	//Initialize data manager
@@ -50,5 +52,6 @@ public class IngageClient {
     	ThreadManager.shutdownExecutor();
     	ConnectionManager.cleanUp();
     	DataManager.save();
+    	ConfigManager.save();
     }
 }
