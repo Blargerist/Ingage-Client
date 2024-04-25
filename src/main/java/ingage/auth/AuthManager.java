@@ -20,8 +20,8 @@ public class AuthManager {
 	private static final List<StreamlabsUser> streamlabsUsers = new ArrayList<StreamlabsUser>();
 	
 	private static final Gson GSON = new Gson().newBuilder().setPrettyPrinting().create();
-	private static final String TWITCH_AUTH_TOKENS_FILE = "./data/tokens/Twitch.json";
-	private static final String STREAMLABS_AUTH_TOKENS_FILE = "./data/tokens/Streamlabs.json";
+	private static final String TWITCH_AUTH_TOKENS_FILE = "./data/accounts/Twitch.json";
+	private static final String STREAMLABS_AUTH_TOKENS_FILE = "./data/accounts/Streamlabs.json";
 	
 	public static List<TwitchUser> getTwitchUsers() {
 		return twitchUsers;
