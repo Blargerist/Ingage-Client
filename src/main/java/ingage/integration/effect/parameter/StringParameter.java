@@ -45,10 +45,12 @@ public class StringParameter extends ParameterBase<String, String> {
 
 		@Override
 		public void imGui(EffectConfig config) {
-			ImString value = new ImString(this.value, 300);
-			
-			if (ImGui.inputText(this.parameter.display, value)) {
-				this.value = value.get();
+			if (this.parameter != null) {
+				ImString value = new ImString(this.value, 300);
+				
+				if (ImGui.inputText(this.parameter.display, value)) {
+					this.value = value.get();
+				}
 			}
 		}
 

@@ -45,22 +45,24 @@ public class StringArrayParameter extends ParameterBase<String[], String[]> {
 
 		@Override
 		public void imGui(EffectConfig config) {
-			StringBuilder valueBuilder = new StringBuilder();
-			
-			if (this.value.length > 0) {
-				valueBuilder.append(this.value[0]);
+			if (this.parameter != null) {
+				StringBuilder valueBuilder = new StringBuilder();
 				
-				for (int i = 1; i < this.value.length; i++) {
-					valueBuilder.append("\n");
-					valueBuilder.append(this.value[i]);
+				if (this.value.length > 0) {
+					valueBuilder.append(this.value[0]);
+					
+					for (int i = 1; i < this.value.length; i++) {
+						valueBuilder.append("\n");
+						valueBuilder.append(this.value[i]);
+					}
 				}
-			}
-			
-			String valueString = valueBuilder.toString();
-			ImString value = new ImString(valueString, valueString.length() + 1000);
-			
-			if (ImGui.inputTextMultiline(this.parameter.display, value, 300, (ImGui.getFontSize() + ImGui.getStyle().getFramePaddingY()) * Math.max(2, this.value.length + 1))) {
-				this.value = value.get().trim().split("\n");
+				
+				String valueString = valueBuilder.toString();
+				ImString value = new ImString(valueString, valueString.length() + 1000);
+				
+				if (ImGui.inputTextMultiline(this.parameter.display, value, 300, (ImGui.getFontSize() + ImGui.getStyle().getFramePaddingY()) * Math.max(2, this.value.length + 1))) {
+					this.value = value.get().trim().split("\n");
+				}
 			}
 		}
 
