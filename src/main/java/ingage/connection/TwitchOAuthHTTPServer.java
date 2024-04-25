@@ -53,13 +53,13 @@ public class TwitchOAuthHTTPServer extends SimpleChannelInboundHandler<Object> {
 		    }
 			String uri = request.uri();
 			
-			if (uri.equals("/User/ReceiveTwitchOAuth")) {
+			if (uri.equals("/Ingage/ReceiveTwitchOAuth")) {
 				String responseStr = 
 						"<HTML>" +
                                 "<BODY>" +
                                 "<script>" +
                                 "var xhr = new XMLHttpRequest();" +
-                                "xhr.open('POST', 'http://localhost:8080/twitch/oauth/fragment', true);" +
+                                "xhr.open('POST', 'http://localhost:8080/Ingage/ReceiveTwitchOAuth', true);" +
                                 "xhr.setRequestHeader('Content-Type', 'application/json');" +
                                 "xhr.send(JSON.stringify({fragment: document.location.hash}));" +
                                 "window.location.href = 'http://www.google.com';" +

@@ -15,7 +15,7 @@ import ingage.connection.TwitchEventSub;
 import ingage.connection.response.TwitchGetUsersResponse;
 
 public class AuthManager {
-	public static final String TWITCH_CLIENT_ID = "s0jyrybwcp9tm502ytm00sbg3n4jyh";
+	public static final String TWITCH_CLIENT_ID = "w6peginf7tyxi1r1s96baqm3y8b2yr";
 	private static final List<TwitchUser> twitchUsers = new ArrayList<TwitchUser>();
 	private static final List<StreamlabsUser> streamlabsUsers = new ArrayList<StreamlabsUser>();
 	

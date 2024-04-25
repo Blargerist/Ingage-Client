@@ -20,7 +20,7 @@ public class HTTPRequests {
 	private static final Gson GSON = new Gson();
 
 	public static void initTwitchOAuth(String clientID) {// TODO: Needs to use state
-		String redirect_uri = "http://localhost:8080/User/ReceiveTwitchOAuth";
+		String redirect_uri = "http://localhost:8080/Ingage/ReceiveTwitchOAuth";
 		String response_type = "token";
 		String[] scopes = new String[] {
 			"channel:read:redemptions",//For listening to channel points redemptions on eventsub
