@@ -320,6 +320,10 @@ public class TwitchEventSub extends SimpleChannelInboundHandler<Object> {
     }
 	
 	public static void init() {
+		//Don't start until there's an account to subscribe for
+		if (AuthManager.getTwitchUsers().size() <= 0) {
+			return;
+		}
 		lastMessageTime = Instant.now();
 		startDestroy();
 		waitDestroy();

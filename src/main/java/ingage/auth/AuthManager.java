@@ -70,8 +70,10 @@ public class AuthManager {
 		//Save the tokens now that there's a new one
 		saveTwitch();
 		
-		//Add to existing connections
-		TwitchEventSub.subscribeEventsForUser(user);
+		//Start/restart connection on new auth
+		if (save) {
+			TwitchEventSub.init();
+		}
 	}
 	
 	public static void addStreamLabs(String token) {
