@@ -6,7 +6,7 @@ import ingage.Window;
 public abstract class Screen {
 
 	public void imGui() {
-		if (ImGui.button("Auth")) {
+		if (ImGui.button("Accounts")) {
 			Window.screen = UsersScreen.INSTANCE;
 		}
 		ImGui.sameLine();
