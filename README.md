@@ -5,7 +5,7 @@
 
 ## Installation
 > [!CAUTION]
-> The Ingage Client currently only supports Windows. Other operating systems are possible if there is demand.
+> The Ingage Client currently only supports Windows.
 
 ### Windows
 Download the latest installer from the [Releases](https://github.com/Blargerist/Ingage-Client/releases) and run the exe.
@@ -26,7 +26,7 @@ To find your Socket API Token, log in to the Streamlabs website, Navigate to Acc
 ### Adding Integrations
 New integrations can be added to the Ingage Client while it is running by downloading them from wherever they may be hosted and running them, whether by running a game where the mod is installed or running a standalone application. The integration will connect to the Ingage Client app and transfer its information, making it available for configuration.
 
-### Configuring Effects
+### Configuring Events
 Navigate to the Events screen using the tab at the top of the app. Here you can add new Profiles, which contain a set of Events and can be toggled on and off, making it possible to have different profiles for various games or situations.
 
 #### Events
