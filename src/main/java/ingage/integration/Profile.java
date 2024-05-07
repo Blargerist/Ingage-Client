@@ -34,45 +34,49 @@ public class Profile {
 				this.enabled =! this.enabled;
 			}
 			
-			if (ImGui.button("New Event")) {
-				eventsToAdd.add(new Event());
-			}
-			
-			for (Event event : events) {
-				if (ImGui.treeNode(event.uuid, event.name)) {
-					
-					if (ImGui.button("Remove")) {
-						eventsToRemove.add(event);
-					}
-					event.imGui();
-					
-					ImGui.treePop();
+			if (ImGui.treeNode("Events")) {
+				if (ImGui.button("New Event")) {
+					eventsToAdd.add(new Event());
 				}
+				
+				for (Event event : events) {
+					if (ImGui.treeNode(event.uuid, event.name)) {
+						
+						if (ImGui.button("Remove")) {
+							eventsToRemove.add(event);
+						}
+						event.imGui();
+						
+						ImGui.treePop();
+					}
+				}
+				
+				//Move components up
+				for (Event event : eventsToMoveUp) {
+					int index = events.indexOf(event);
+					Collections.swap(events, events.indexOf(event), Math.max(0, index - 1));
+				}
+				eventsToMoveUp.clear();
+				
+				//Move components down
+				for (Event event : eventsToMoveDown) {
+					int index = events.indexOf(event);
+					Collections.swap(events, events.indexOf(event), Math.min(events.size() - 1, index + 1));
+				}
+				eventsToMoveDown.clear();
+				
+				//Remove deleted components
+				for (Event event : eventsToRemove) {
+					events.remove(event);
+				}
+				eventsToRemove.clear();
+				
+				//Add new components
+				events.addAll(eventsToAdd);
+				eventsToAdd.clear();
+				
+				ImGui.treePop();
 			}
-			
-			//Move components up
-			for (Event event : eventsToMoveUp) {
-				int index = events.indexOf(event);
-				Collections.swap(events, events.indexOf(event), Math.max(0, index - 1));
-			}
-			eventsToMoveUp.clear();
-			
-			//Move components down
-			for (Event event : eventsToMoveDown) {
-				int index = events.indexOf(event);
-				Collections.swap(events, events.indexOf(event), Math.min(events.size() - 1, index + 1));
-			}
-			eventsToMoveDown.clear();
-			
-			//Remove deleted components
-			for (Event event : eventsToRemove) {
-				events.remove(event);
-			}
-			eventsToRemove.clear();
-			
-			//Add new components
-			events.addAll(eventsToAdd);
-			eventsToAdd.clear();
 		} catch(Exception e) {
 			Logger.error("Error configuring events", e);
 		}
