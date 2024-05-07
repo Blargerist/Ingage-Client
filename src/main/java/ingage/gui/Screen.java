@@ -11,7 +11,7 @@ public abstract class Screen {
 		}
 		ImGui.sameLine();
 		
-		if (ImGui.button("Events")) {
+		if (ImGui.button("Event Profiles")) {
 			Window.screen = IntegrationEventsScreen.INSTANCE;
 		}
 		ImGui.sameLine();
