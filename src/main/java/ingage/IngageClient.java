@@ -6,6 +6,7 @@ import ingage.data.DataManager;
 import ingage.event.HistoryManager;
 import ingage.integration.EventHandler;
 import ingage.integration.IntegrationManager;
+import ingage.integration.IntegrationSettingsHandler;
 
 public class IngageClient {
 	
@@ -29,9 +30,11 @@ public class IngageClient {
         	DataManager.init();
         	//Load integrations
         	IntegrationManager.load();
-        	//Load events
         	try {
+            	//Load events
             	EventHandler.load();
+            	//Load integration settings
+            	IntegrationSettingsHandler.load();
         	} catch (Exception e) {
         		shutdown = true;
         		ConnectionManager.cleanUp();

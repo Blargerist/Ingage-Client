@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ingage.integration.effect.EffectBase;
+import ingage.integration.effect.parameter.ParameterBase;
 
 public class Integration {
 
 	public final String id ;
 	public final String display;
 	public final List<EffectBase> effects = new ArrayList<EffectBase>();
+	public List<ParameterBase<?, ?>> settings = new ArrayList<ParameterBase<?, ?>>();
 	//For gui
 	public transient String[] effectDisplayNames = new String[] {};
 	

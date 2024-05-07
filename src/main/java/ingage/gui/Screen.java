@@ -16,6 +16,11 @@ public abstract class Screen {
 		}
 		ImGui.sameLine();
 		
+		if (ImGui.button("Integration Settings")) {
+			Window.screen = IntegrationSettingsScreen.INSTANCE;
+		}
+		ImGui.sameLine();
+		
 		if (ImGui.button("History")) {
 			Window.screen = HistoryScreen.INSTANCE;
 		}

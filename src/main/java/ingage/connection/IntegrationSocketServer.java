@@ -12,10 +12,11 @@ import com.google.gson.JsonObject;
 
 import ingage.Logger;
 import ingage.Util;
-import ingage.gui.IntegrationEventsScreen;
 import ingage.integration.EventHandler;
 import ingage.integration.Integration;
 import ingage.integration.IntegrationManager;
+import ingage.integration.IntegrationSettings;
+import ingage.integration.IntegrationSettingsHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -173,6 +174,18 @@ public class IntegrationSocketServer {
 								integrationList.add(integrations.get(i).getAsString());
 							}
 						}
+						//Send settings
+						for (String integration : integrationList) {
+							IntegrationSettings settings = IntegrationSettingsHandler.getSettings(integration);
+							
+							if (settings != null) {
+								JsonObject toSend = new JsonObject();
+								toSend.addProperty("type", "SETTINGS");
+								toSend.add("payload", settings.toJsonPayload());
+
+								ctx.writeAndFlush(toSend.toString()+"\r\n").await();
+							}
+						}
 						break;
 					}
 					case "CLOSE": {
@@ -202,8 +215,8 @@ public class IntegrationSocketServer {
 							//Reload profiles so they use the new version
 							Logger.log("Received new integration. Reloading.");
 							EventHandler.load();
-							//Update profiles on config screen
-							IntegrationEventsScreen.INSTANCE.updateProfiles();
+							//Reload settings
+							IntegrationSettingsHandler.load();
 						}
 						break;
 					}

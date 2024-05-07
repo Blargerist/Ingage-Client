@@ -38,17 +38,6 @@ public class IntegrationManager {
 	}
 	
 	public static void addIntegration(Integration integration) {
-		for (EffectBase effect : integration.effects) {
-			effect.integration = integration;
-			
-			for (ParameterBase<?, ?> parameter : effect.parameters) {
-				parameter.effect = effect;
-			}
-		}
-		integration.buildDisplayNamesArray();
-		
-		IntegrationManager.integrations.add(integration);
-
 		File integrationsFolder = new File(IntegrationManager.INTEGRATIONS_FOLDER);
 		integrationsFolder.mkdirs();
 		
@@ -58,6 +47,12 @@ public class IntegrationManager {
 		} catch (IOException e) {
 			Logger.error(e);
 		}
+		
+		//Add settings for new integration
+		IntegrationSettingsHandler.addSettings(integration);
+		
+		//Reload all integrations
+		load();
 	}
 	
 	public static void load() {
