@@ -70,7 +70,7 @@ public class IntegrationManager {
 				if (file.isFile()) {
 					String fileName = file.getName();
 					
-					if (fileName.endsWith(".json")) {
+					if (fileName.endsWith(".json") && !file.getParent().endsWith("settings")) {
 						try {
 							StringBuilder combined = new StringBuilder();
 							
@@ -80,7 +80,7 @@ public class IntegrationManager {
 							
 							Integration integration = Util.GSON.fromJson(combined.toString(), Integration.class);
 							
-							if (integration != null) {
+							if (integration != null && integration.id != null && integration.display != null) {
 								for (EffectBase effect : integration.effects) {
 									effect.integration = integration;
 									
