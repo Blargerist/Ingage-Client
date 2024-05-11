@@ -82,7 +82,6 @@ tasks.jpackage {
 		winShortcutPrompt = true
 		winMenu = true
 		winShortcut = true
-		winPerUserInstall = true
 		icon = "icons.ico"
     }
 }
