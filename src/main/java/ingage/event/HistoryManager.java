@@ -12,11 +12,12 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import com.google.gson.reflect.TypeToken;
 
+import ingage.Const;
 import ingage.Logger;
 import ingage.Util;
 
 public class HistoryManager {
-	public static final File HISTORY_FILE = new File("./data/ConnectionEvents.json");
+	public static final File HISTORY_FILE = new File(Const.DATA_DIRECTORY+"ConnectionEvents.json");
 	private static HashMap<String, CircularFifoQueue<EventBase>> connectionEventHistory = new HashMap<String, CircularFifoQueue<EventBase>>();
 	
 	public static void handleEvent(EventBase event) {

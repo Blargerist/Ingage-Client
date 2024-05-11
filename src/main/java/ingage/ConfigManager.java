@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class ConfigManager {
 
-	public static final File CONFIG_FILE = new File("./Config.json");
+	public static final File CONFIG_FILE = new File(Const.WORKING_DIRECTORY+"Config.json");
 	public static ConfigManager INSTANCE = new ConfigManager();
 	private final HashMap<String, Window> windows = new HashMap<String, Window>();
 	

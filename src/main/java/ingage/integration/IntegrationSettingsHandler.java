@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import ingage.Const;
 import ingage.Logger;
 import ingage.Util;
 import ingage.gui.IntegrationSettingsScreen;
@@ -17,7 +18,7 @@ import ingage.integration.effect.parameter.ParameterBase.ParameterConfigBase;
 
 public class IntegrationSettingsHandler {
 	
-	public static final File INTEGRATION_SETTINGS_FOLDER = new File("./data/integrations/settings/");
+	public static final File INTEGRATION_SETTINGS_FOLDER = new File(Const.INTEGRATION_SETTINGS_DIRECTORY);
 	public static final List<IntegrationSettings> integrationSettings = new ArrayList<IntegrationSettings>();
 	
 	public static IntegrationSettings getSettings(String id) {

@@ -13,9 +13,8 @@ public class Logger {
 	private static final Object lock = new Object();
 	private static final DateFormat fileNameFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private static final DateFormat timePrependFormat = new SimpleDateFormat("hh:mm:ss aa: ");
-	public static final String LOG_FOLDER = "./logs/";
 	public static final String LOG_FILE_EXTENSION = ".txt";
-	private static final String LOG_FILE = LOG_FOLDER + fileNameFormat.format(new Date()) + LOG_FILE_EXTENSION;
+	private static final String LOG_FILE = Const.LOG_DIRECTORY + fileNameFormat.format(new Date()) + LOG_FILE_EXTENSION;
 	
 	public static void log(String toLog) {
 		synchronized(lock) {

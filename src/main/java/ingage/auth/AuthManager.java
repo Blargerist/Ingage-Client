@@ -9,6 +9,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
+import ingage.Const;
 import ingage.connection.HTTPRequests;
 import ingage.connection.StreamlabsSocket;
 import ingage.connection.TwitchEventSub;
@@ -20,8 +21,8 @@ public class AuthManager {
 	private static final List<StreamlabsUser> streamlabsUsers = new ArrayList<StreamlabsUser>();
 	
 	private static final Gson GSON = new Gson().newBuilder().setPrettyPrinting().create();
-	private static final String TWITCH_AUTH_TOKENS_FILE = "./data/accounts/Twitch.json";
-	private static final String STREAMLABS_AUTH_TOKENS_FILE = "./data/accounts/Streamlabs.json";
+	private static final String TWITCH_AUTH_TOKENS_FILE = Const.ACCOUNTS_DIRECTORY+"Twitch.json";
+	private static final String STREAMLABS_AUTH_TOKENS_FILE = Const.ACCOUNTS_DIRECTORY+"Streamlabs.json";
 	
 	public static List<TwitchUser> getTwitchUsers() {
 		return twitchUsers;

@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import com.google.gson.JsonObject;
 
+import ingage.Const;
 import ingage.Logger;
 import ingage.Util;
 import ingage.connection.IntegrationSocketServer;
@@ -30,7 +31,7 @@ import ingage.integration.effect.parameter.ParameterType;
 
 public class EventHandler {
 	
-	public static final File PROFILES_FOLDER = new File("./data/profiles/");
+	public static final File PROFILES_FOLDER = new File(Const.PROFILES_DIRECTORY);
 	public static List<Profile> profiles = new ArrayList<Profile>();
 
 	public static void handleEvent(EventBase connectionEvent) {

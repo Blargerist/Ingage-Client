@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import ingage.Const;
 import ingage.Logger;
 import ingage.Util;
 import ingage.integration.effect.EffectBase;
@@ -22,7 +23,6 @@ public class IntegrationManager {
 	public static final List<Integration> integrations = new ArrayList<Integration>();
 	//For gui
 	public static String[] integrationDisplayNames = new String[] {};
-	public static final String INTEGRATIONS_FOLDER = "./data/integrations/";
 	
 	public static Integration getIntegration(String id) {
 		for (Integration integration : integrations) {
@@ -38,7 +38,7 @@ public class IntegrationManager {
 	}
 	
 	public static void addIntegration(Integration integration) {
-		File integrationsFolder = new File(IntegrationManager.INTEGRATIONS_FOLDER);
+		File integrationsFolder = new File(Const.INTEGRATIONS_DIRECTORY);
 		integrationsFolder.mkdirs();
 		
 		//Save new integration
@@ -60,7 +60,7 @@ public class IntegrationManager {
 		
 		loadInternalIntegration();
 		
-		File integrationsFolderFile = new File(INTEGRATIONS_FOLDER);
+		File integrationsFolderFile = new File(Const.INTEGRATIONS_DIRECTORY);
 		integrationsFolderFile.mkdirs();
 		
 		try(Stream<Path> walk = Files.walk(integrationsFolderFile.toPath())) {
