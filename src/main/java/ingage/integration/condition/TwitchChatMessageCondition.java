@@ -151,8 +151,9 @@ public class TwitchChatMessageCondition extends ConditionBase {
 		
 		if (ImGui.inputText("Message", message)) {
 			this.exactMessage = message.get();
-			
-			if (ImGui.radioButton("Ignore Case", this.exactMessageIgnoreCase)) {
+		}
+		if (this.exactMessage != null && !this.exactMessage.isEmpty()) {
+			if (ImGui.radioButton("Ignore Case###Message", this.exactMessageIgnoreCase)) {
 				this.exactMessageIgnoreCase =! this.exactMessageIgnoreCase;
 			}
 		}
@@ -161,8 +162,9 @@ public class TwitchChatMessageCondition extends ConditionBase {
 		
 		if (ImGui.inputText("Starts With", startsWith)) {
 			this.startsWith = startsWith.get();
-			
-			if (ImGui.radioButton("Ignore Case", this.startsWithIgnoreCase)) {
+		}
+		if (this.startsWith != null && !this.startsWith.isEmpty()) {
+			if (ImGui.radioButton("Ignore Case###Starts With", this.startsWithIgnoreCase)) {
 				this.startsWithIgnoreCase =! this.startsWithIgnoreCase;
 			}
 		}
@@ -171,18 +173,20 @@ public class TwitchChatMessageCondition extends ConditionBase {
 		
 		if (ImGui.inputText("Ends With", endsWith)) {
 			this.endsWith = endsWith.get();
-			
-			if (ImGui.radioButton("Ignore Case", this.endsWithIgnoreCase)) {
+		}
+		if (this.endsWith != null && !this.endsWith.isEmpty()) {
+			if (ImGui.radioButton("Ignore Case###Ends With", this.endsWithIgnoreCase)) {
 				this.endsWithIgnoreCase =! this.endsWithIgnoreCase;
 			}
 		}
 		//Contains
 		ImString contains = new ImString(this.contains, 300);
 		
-		if (ImGui.inputText("Message", contains)) {
+		if (ImGui.inputText("Contains", contains)) {
 			this.contains = contains.get();
-			
-			if (ImGui.radioButton("Ignore Case", this.containsIgnoreCase)) {
+		}
+		if (this.contains != null && !this.contains.isEmpty()) {
+			if (ImGui.radioButton("Ignore Case###Contains", this.containsIgnoreCase)) {
 				this.containsIgnoreCase =! this.containsIgnoreCase;
 			}
 		}
